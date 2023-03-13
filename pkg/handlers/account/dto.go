@@ -1,4 +1,4 @@
-package authentication
+package account
 
 type SignInDTO struct {
 	Username string `json:"username"`

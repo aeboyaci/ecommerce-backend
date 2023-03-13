@@ -1,8 +1,7 @@
-package authentication
+package account
 
 import (
 	"ecommerce-backend/pkg/common/logger"
-	"ecommerce-backend/pkg/middlewares"
 	"ecommerce-backend/pkg/models"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -13,7 +12,7 @@ type router struct {
 	controller controller
 }
 
-func RegisterRouter(apiRouter *gin.RouterGroup) {
+func RegisterRouter(apiRouter *gin.RouterGroup, protectedApiRouter *gin.RouterGroup) {
 	r := router{
 		controller: newController(),
 	}
@@ -21,10 +20,8 @@ func RegisterRouter(apiRouter *gin.RouterGroup) {
 	authenticationRouter := apiRouter.Group("/account")
 	authenticationRouter.POST("/sign-in", r.signIn)
 	authenticationRouter.POST("/sign-up", r.signUp)
-	authenticationRouter.GET("/me",
-		middlewares.EnforceAuthentication(),
-		r.getUserInformation,
-	)
+
+	protectedApiRouter.GET("/me", r.getUserInformation)
 }
 
 func (r router) signIn(ctx *gin.Context) {

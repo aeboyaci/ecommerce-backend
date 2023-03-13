@@ -1,4 +1,4 @@
-package authentication
+package account
 
 import (
 	"ecommerce-backend/pkg/models"
