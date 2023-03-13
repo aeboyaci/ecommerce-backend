@@ -1,0 +1,16 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:12.8-alpine
+    container_name: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=ahmeterenboyaci
+      - POSTGRES_DB=ecommerce
+    healthcheck:
+      test: pg_isready -U root
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db_storage:/var/lib/postgresql/data
