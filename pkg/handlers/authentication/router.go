@@ -2,6 +2,7 @@ package authentication
 
 import (
 	"ecommerce-backend/pkg/common/logger"
+	"ecommerce-backend/pkg/middlewares"
 	"ecommerce-backend/pkg/models"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -20,6 +21,10 @@ func RegisterRouter(apiRouter *gin.RouterGroup) {
 	authenticationRouter := apiRouter.Group("/account")
 	authenticationRouter.POST("/sign-in", r.signIn)
 	authenticationRouter.POST("/sign-up", r.signUp)
+	authenticationRouter.GET("/me",
+		middlewares.EnforceAuthentication(),
+		r.getUserInformation,
+	)
 }
 
 func (r router) signIn(ctx *gin.Context) {
@@ -73,5 +78,23 @@ func (r router) signUp(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, gin.H{
 		"success": true,
 		"data":    "user successfully created",
+	})
+}
+
+func (r router) getUserInformation(ctx *gin.Context) {
+	username := ctx.GetString("username")
+	user, err := r.controller.getUserInformation(username)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"success": false,
+			"error":   err.Error(),
+		})
+		return
+	}
+
+	logger.GetInstance().Debug(fmt.Sprintf("user information: %+v", user))
+	ctx.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data":    user,
 	})
 }

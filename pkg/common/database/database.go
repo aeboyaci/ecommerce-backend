@@ -1,25 +1,20 @@
 package database
 
 import (
+	"ecommerce-backend/pkg/common/env"
 	"ecommerce-backend/pkg/models"
 	"errors"
 	"fmt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	"os"
 )
 
 var db *gorm.DB
 
 func Initialize() error {
-	connectionString, hasEnvironmentVariable := os.LookupEnv("DB_URL")
-	if !hasEnvironmentVariable {
-		return errors.New("DB_URL environment variable has not set")
-	}
-
 	var err error
-	db, err = gorm.Open(postgres.Open(connectionString), &gorm.Config{
+	db, err = gorm.Open(postgres.Open(env.DB_URL), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Silent),
 	})
 	if err != nil {

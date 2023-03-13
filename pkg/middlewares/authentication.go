@@ -39,7 +39,6 @@ func EnforceAuthentication() gin.HandlerFunc {
 
 		username := token.Claims.(jwt.MapClaims)["username"]
 		ctx.Set("username", username)
-
 		ctx.Next()
 	}
 }

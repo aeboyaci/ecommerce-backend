@@ -14,6 +14,7 @@ import (
 type controller interface {
 	signIn(user SignInDTO) (string, error)
 	signUp(user models.User) error
+	getUserInformation(username string) (UserResponseDTO, error)
 }
 
 type controllerImpl struct {
@@ -58,4 +59,15 @@ func (c controllerImpl) signUp(user models.User) error {
 	user.Password = string(hashedBytes)
 
 	return c.repository.save(database.GetInstance(), user)
+}
+
+func (c controllerImpl) getUserInformation(username string) (UserResponseDTO, error) {
+	dbUser, err := c.repository.getUserByUsername(database.GetInstance(), username)
+	if err != nil {
+		return UserResponseDTO{}, err
+	}
+	return UserResponseDTO{
+		FirstName: dbUser.FirstName,
+		LastName:  dbUser.LastName,
+	}, nil
 }
