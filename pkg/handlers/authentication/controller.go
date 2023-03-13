@@ -2,12 +2,12 @@ package authentication
 
 import (
 	"ecommerce-backend/pkg/common/database"
+	"ecommerce-backend/pkg/common/env"
 	"ecommerce-backend/pkg/models"
 	"errors"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
-	"os"
 	"time"
 )
 
@@ -18,13 +18,11 @@ type controller interface {
 
 type controllerImpl struct {
 	repository repository
-	jwtSecret  string
 }
 
 func newController() controller {
 	return controllerImpl{
 		repository: repositoryImpl{},
-		jwtSecret:  os.Getenv("JWT_SECRET"),
 	}
 }
 
@@ -45,7 +43,7 @@ func (c controllerImpl) signIn(user SignInDTO) (string, error) {
 		claims := token.Claims.(jwt.MapClaims)
 		claims["exp"] = time.Now().Add(24 * time.Hour)
 		claims["username"] = dbUser.Username
-		tokenString, err = token.SignedString([]byte(c.jwtSecret))
+		tokenString, err = token.SignedString([]byte(env.JWT_SECRET))
 
 		return nil
 	})
