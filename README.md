@@ -1,7 +1,7 @@
 ## Backend Implementation for an E-Commerce App
 **Ahmet Eren BOYACI**
 
-I developed a backend for an e-commerce app to demonstrate my backend development skills.
+I developed a scalable backend for an e-commerce app to demonstrate my backend development skills.
 
 - Docker & Docker-Compose
 - PostgreSQL
@@ -12,3 +12,4 @@ I developed a backend for an e-commerce app to demonstrate my backend developmen
 - Authentication & Authorization Implementation
 - Repository and Singleton patterns
 - Dependency Injection
+- Gorm database hooks to validate data given

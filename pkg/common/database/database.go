@@ -38,6 +38,12 @@ func autoMigrate() error {
 		return errors.New("cannot migrate User table")
 	}
 
+	err = db.AutoMigrate(&models.Address{})
+	if err != nil {
+		log.GetInstance().Error(err.Error())
+		return errors.New("cannot migrate Address table")
+	}
+
 	log.GetInstance().Info("migrations run successfully")
 	return nil
 }

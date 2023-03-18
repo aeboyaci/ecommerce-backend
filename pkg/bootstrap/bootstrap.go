@@ -5,6 +5,7 @@ import (
 	"ecommerce-backend/pkg/common/env"
 	"ecommerce-backend/pkg/common/logger"
 	"ecommerce-backend/pkg/handlers/account"
+	"ecommerce-backend/pkg/handlers/address"
 	"ecommerce-backend/pkg/middlewares"
 	"github.com/gin-gonic/gin"
 )
@@ -34,4 +35,5 @@ func RegisterRouters(r *gin.Engine) {
 	protectedApiRouter.Use(middlewares.EnforceAuthentication())
 
 	account.RegisterRouter(apiRouter, protectedApiRouter)
+	address.RegisterRouter(protectedApiRouter)
 }
