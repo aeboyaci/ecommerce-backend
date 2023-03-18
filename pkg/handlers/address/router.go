@@ -20,6 +20,7 @@ func RegisterRouter(protectedApiRouter *gin.RouterGroup) {
 	addressRouter := protectedApiRouter.Group("/addresses")
 	addressRouter.GET("", r.getAllAddresses)
 	addressRouter.POST("", r.addNewAddress)
+	addressRouter.PATCH("/:addressId", r.updateAddress)
 }
 
 func (r router) getAllAddresses(ctx *gin.Context) {
@@ -68,5 +69,35 @@ func (r router) addNewAddress(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, gin.H{
 		"success": true,
 		"data":    "address successfully created",
+	})
+}
+
+func (r router) updateAddress(ctx *gin.Context) {
+	userId := ctx.GetString("userId")
+	addressId := ctx.Param("addressId")
+
+	var address models.Address
+	if err := ctx.BindJSON(&address); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"success": false,
+			"error":   "cannot parse request body. invalid request body sent",
+		})
+		return
+	}
+
+	err := r.controller.updateAddressById(userId, addressId, address)
+	if err != nil {
+		logger.GetInstance().Error(err.Error())
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"success": false,
+			"error":   err.Error(),
+		})
+		return
+	}
+
+	logger.GetInstance().Debug(fmt.Sprintf("address (id: %s) updated for %s", addressId, userId))
+	ctx.JSON(http.StatusCreated, gin.H{
+		"success": true,
+		"data":    "address successfully updated",
 	})
 }

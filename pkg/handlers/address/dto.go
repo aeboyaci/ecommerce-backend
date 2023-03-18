@@ -1,9 +1,7 @@
-package models
+package address
 
-type Address struct {
-	Base
-	UserID      string `json:"-" gorm:"index"`
-	User        User   `json:"-" gorm:"foreignKey:UserID"`
+type AddressResponseDTO struct {
+	ID          string `json:"id"`
 	Name        string `json:"name"`
 	Address     string `json:"address"`
 	City        string `json:"city"`
