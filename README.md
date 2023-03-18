@@ -13,3 +13,6 @@ I developed a scalable backend for an e-commerce app to demonstrate my backend d
 - Repository and Singleton patterns
 - Dependency Injection
 - Gorm database hooks to validate data given
+
+### Database Diagram
+![Database Diagram](./db_diagram.png)
