@@ -18,7 +18,28 @@ func RegisterRouter(protectedApiRouter *gin.RouterGroup) {
 	}
 
 	addressRouter := protectedApiRouter.Group("/addresses")
+	addressRouter.GET("", r.getAllAddresses)
 	addressRouter.POST("", r.addNewAddress)
+}
+
+func (r router) getAllAddresses(ctx *gin.Context) {
+	userId := ctx.GetString("userId")
+
+	addresses, err := r.controller.getAllAddresses(userId)
+	if err != nil {
+		logger.GetInstance().Error(err.Error())
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"success": false,
+			"error":   err.Error(),
+		})
+		return
+	}
+
+	logger.GetInstance().Debug(fmt.Sprintf("address retrieved for %s", userId))
+	ctx.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data":    addresses,
+	})
 }
 
 func (r router) addNewAddress(ctx *gin.Context) {
@@ -35,6 +56,7 @@ func (r router) addNewAddress(ctx *gin.Context) {
 
 	err := r.controller.addNewAddress(userId, address)
 	if err != nil {
+		logger.GetInstance().Error(err.Error())
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
 			"error":   err.Error(),

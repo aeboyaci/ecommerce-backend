@@ -7,6 +7,7 @@ import (
 
 type controller interface {
 	addNewAddress(userId string, address models.Address) error
+	getAllAddresses(userId string) ([]models.Address, error)
 }
 
 type controllerImpl struct {
@@ -22,4 +23,8 @@ func newController() controller {
 func (c controllerImpl) addNewAddress(userId string, address models.Address) error {
 	address.UserID = userId
 	return c.repository.save(database.GetInstance(), address)
+}
+
+func (c controllerImpl) getAllAddresses(userId string) ([]models.Address, error) {
+	return c.repository.getAllAddresses(database.GetInstance(), userId)
 }

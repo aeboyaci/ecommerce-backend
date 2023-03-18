@@ -65,6 +65,7 @@ func (r router) signUp(ctx *gin.Context) {
 
 	err := r.controller.signUp(user)
 	if err != nil {
+		logger.GetInstance().Error(err.Error())
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
 			"error":   err.Error(),
@@ -83,6 +84,7 @@ func (r router) getUserInformation(ctx *gin.Context) {
 	userId := ctx.GetString("userId")
 	user, err := r.controller.getUserInformation(userId)
 	if err != nil {
+		logger.GetInstance().Error(err.Error())
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
 			"error":   err.Error(),
