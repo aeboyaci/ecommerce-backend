@@ -21,7 +21,8 @@ func RegisterRouter(apiRouter *gin.RouterGroup, protectedApiRouter *gin.RouterGr
 	authenticationRouter.POST("/sign-in", r.signIn)
 	authenticationRouter.POST("/sign-up", r.signUp)
 
-	protectedApiRouter.GET("/me", r.getUserInformation)
+	protectedAuthenticationRouter := protectedApiRouter.Group("/account")
+	protectedAuthenticationRouter.GET("/me", r.getUserInformation)
 }
 
 func (r router) signIn(ctx *gin.Context) {
@@ -79,8 +80,8 @@ func (r router) signUp(ctx *gin.Context) {
 }
 
 func (r router) getUserInformation(ctx *gin.Context) {
-	username := ctx.GetString("username")
-	user, err := r.controller.getUserInformation(username)
+	userId := ctx.GetString("userId")
+	user, err := r.controller.getUserInformation(userId)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -89,7 +90,7 @@ func (r router) getUserInformation(ctx *gin.Context) {
 		return
 	}
 
-	logger.GetInstance().Debug(fmt.Sprintf("user information: %+v", user))
+	logger.GetInstance().Debug(fmt.Sprintf("user retrieved information with username: %+v", user))
 	ctx.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"data":    user,

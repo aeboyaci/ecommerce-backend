@@ -14,7 +14,7 @@ import (
 type controller interface {
 	signIn(user SignInDTO) (string, error)
 	signUp(user models.User) error
-	getUserInformation(username string) (UserResponseDTO, error)
+	getUserInformation(userId string) (UserResponseDTO, error)
 }
 
 type controllerImpl struct {
@@ -43,7 +43,7 @@ func (c controllerImpl) signIn(user SignInDTO) (string, error) {
 		token := jwt.New(jwt.SigningMethodHS256)
 		claims := token.Claims.(jwt.MapClaims)
 		claims["exp"] = time.Now().Add(24 * time.Hour)
-		claims["username"] = dbUser.Username
+		claims["userId"] = dbUser.ID
 		tokenString, err = token.SignedString([]byte(env.JWT_SECRET))
 
 		return nil
@@ -61,8 +61,8 @@ func (c controllerImpl) signUp(user models.User) error {
 	return c.repository.save(database.GetInstance(), user)
 }
 
-func (c controllerImpl) getUserInformation(username string) (UserResponseDTO, error) {
-	dbUser, err := c.repository.getUserByUsername(database.GetInstance(), username)
+func (c controllerImpl) getUserInformation(userId string) (UserResponseDTO, error) {
+	dbUser, err := c.repository.getUserByUserId(database.GetInstance(), userId)
 	if err != nil {
 		return UserResponseDTO{}, err
 	}

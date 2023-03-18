@@ -2,6 +2,7 @@ package database
 
 import (
 	"ecommerce-backend/pkg/common/env"
+	log "ecommerce-backend/pkg/common/logger"
 	"ecommerce-backend/pkg/models"
 	"errors"
 	"fmt"
@@ -33,8 +34,10 @@ func autoMigrate() error {
 
 	err = db.AutoMigrate(&models.User{})
 	if err != nil {
+		log.GetInstance().Error(err.Error())
 		return errors.New("cannot migrate User table")
 	}
 
+	log.GetInstance().Info("migrations run successfully")
 	return nil
 }
